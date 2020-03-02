@@ -8,7 +8,8 @@ import {
     Image,
     StatusBar,
     TouchableOpacity,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    form
   } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,7 +25,15 @@ import { color } from 'react-native-reanimated';
 
 import {CustomButton} from '../components/customButton.js'
 
- export default class Login extends Component{
+export default class Login extends Component{
+    constructor(){
+        super()
+        this.state = {
+            username : '',
+            password : '',
+        }
+        //this.handlechangetext = this.handlechangetext.bind(this);
+    }
       render(){
           return(
             <View>
@@ -34,19 +43,34 @@ import {CustomButton} from '../components/customButton.js'
                             <Image source = {require('../assets/recent_logo.png')} style = {{width :300 , height :300}}></Image>
                         </View>
                         <Input 
-                            placeholder = "  Email  "
+                            placeholder = "  Username  "
                             leftIcon = {{ type: 'MaterialCommunityIcons', name:'account-box'}}
-                            style = {inputStye.formInput}
+                            style = {inputStyle.formInput}
+                            onChangeText = {(username => this.setState({username}))}
+                            returnKeyType = 'next'
+                            autoCapitalize = 'none'
+                            value = {this.state.username}
                         />
                         <Input 
                             placeholder = "  Password  "
-                            leftIcon = {{ type: 'MaterialCommunityIcons', name:'lock-reset'}}
-                            style = {inputStye.formInput}
+                            leftIcon = {{ type: 'MaterialCommunityIcons', name:'lock'}}
+                            style = {inputStyle.formInput}
+                            onChangeText = {(password => this.setState({password}))}
+                            value = {this.state.password}
+                            autoCapitalize = "none"
+                            returnKeyType = 'next'
                         />
                         <View style={{alignContent:'center' , alignItems:'center'}}>
                             <CustomButton
-                            title = 'Log In'>
-                            onPress ={()=>Alert('login Pressed')}
+                            title = 'Log In'
+                            onPress = {() =>
+                                           {var dict =  login(this.state.username,this.state.password);
+                                            if (dict['success'] == true){
+                                                this.props.navigation.navigate('home',{
+                                                    token: dict['token']
+                                                });
+                                             }
+                                            }}>
                             </CustomButton>
                         </View>
                     </View>
@@ -54,14 +78,33 @@ import {CustomButton} from '../components/customButton.js'
             </View>
           );
       }
-  }
+    }
 
-  function login(url , user_name , password) {
-    
-      
-  }
+function login( user_name , password){
+    fetch('http://127.0.0.1:8000/accountRest/login',{
+        method : 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body:JSON.stringify({
+            'username':user_name,
+            'password':password
+        }),
+    }).then((response) => response.json())
+    .catch(error =>{
+        alert('password or email is wrong')
+    })
+    .then((response) => {
+        token = response['token'];
+        
+        })
+        return({
+            'success': true,
+            'token' : token
+        });
+    }
 
-  var inputStye = StyleSheet.create({
+  var inputStyle = StyleSheet.create({
       formInput:{
        borderBottomWidth: 100,  
     }

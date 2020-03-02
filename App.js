@@ -15,10 +15,13 @@ import {
   Input,
 } from 'react-native-elements'
 
+import {CustomButton} from './components/customButton.js'
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import Login from './screens/login'
+import Login from './screens/login';
+import Registration from './screens/register';
+import Home from './screens/home'; 
 
 class HomeScreen extends Component {
   render() {
@@ -32,21 +35,19 @@ class HomeScreen extends Component {
             </View>
 
             <View>
-              <Button
-                title = "Log In"
-                style = {styles.logIn}
-                onPress = {()=>this.props.navigation.navigate('loginForm')}
-                type='outline'
-                raised = {true}
-              ></Button>
+              <CustomButton
+              title = "Log In"
+              style = {styles.logIn}
+              onPress = {()=>{this.props.navigation.navigate('loginForm')}}
+              ></CustomButton>
             </View>
-            <Separator></Separator>
             <View>
-              <Button
-                title = "Sign Up"
-                style = {styles.logIn}
-                >
-              </Button>
+              <CustomButton
+              title = "Sign Up"
+              style = {styles.signIn}
+              onPress = {()=>{this.props.navigation.navigate('registrationForm')}}
+              >
+              </CustomButton> 
             </View>
             </View>
         </ImageBackground>
@@ -61,22 +62,22 @@ const styles = StyleSheet.create({
   logIn:{
     fontSize:10,
     width:200,
-    borderRadius:50,
+    borderRadius:20,
   },
   separator: {
     marginVertical: 8,
     borderBottomColor: '#737373',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  signIn:{
+    fontSize:10,
+    width:200,
+    borderRadius:20,
+  }
 });
 
-function Separator() {
-  
-  return <View style={styles.separator} />;
-}
-
 const navigator = createStackNavigator({
-  home:
+  landing:
     {
       screen: HomeScreen,
       navigationOptions:{
@@ -90,8 +91,23 @@ const navigator = createStackNavigator({
       headerShown:false,
     }
   },
+   registrationForm:
+   {
+     screen : Registration,
+     navigationOptions:{
+        headerShown : false,
+     }
+   },
+   home:{
+     screen: Home,
+     navigationOptions:{
+       headerShown:false
+     }
+   }
+
+   
 },{
-    initialRouteName : 'home'
+    initialRouteName : 'landing'
   }
 );
 
