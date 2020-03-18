@@ -63,13 +63,16 @@ export default class Login extends Component{
                         <View style={{alignContent:'center' , alignItems:'center'}}>
                             <CustomButton
                             title = 'Log In'
-                            onPress = {() =>
-                                           {var dict =  login(this.state.username,this.state.password);
-                                            if (dict['success'] == true){
+                            onPress = {async () =>
+                                           {const val = await login(this.state.username,this.state.password);
+                                            if(val['success'] == true){
                                                 this.props.navigation.navigate('home',{
-                                                    token: dict['token']
-                                                });
-                                             }
+                                                    token: val['token']
+                                            })
+                                            }
+                                            else{
+                                                alert("your credentials were wrong , please try again")
+                                            }
                                             }}>
                             </CustomButton>
                         </View>
@@ -80,29 +83,32 @@ export default class Login extends Component{
       }
     }
 
-function login( user_name , password){
-    fetch('http://127.0.0.1:8000/accountRest/login',{
+async function login( username , password){
+    data = {
+        'username': username,
+        'password': password,
+    }
+    const response = await fetch('http://127.0.0.1:8000/accountRest/get_token' , {
         method : 'POST',
         headers: {
             'Content-type': 'application/json'
         },
-        body:JSON.stringify({
-            'username':user_name,
-            'password':password
-        }),
-    }).then((response) => response.json())
-    .catch(error =>{
-        alert('password or email is wrong')
+        body: JSON.stringify(data)
     })
-    .then((response) => {
-        token = response['token'];
-        
+    const val = await response.json()
+    if('token' in val){
+        return ({
+            'token': val.token,
+            'success': true
         })
-        return({
-            'success': true,
-            'token' : token
-        });
     }
+    else{
+        return ({
+            'success': false
+        })
+    }
+    
+}
 
   var inputStyle = StyleSheet.create({
       formInput:{
