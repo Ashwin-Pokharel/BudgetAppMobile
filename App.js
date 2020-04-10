@@ -22,6 +22,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Login from './screens/login';
 import Registration from './screens/register';
 import Home from './screens/home'; 
+import Income from './screens/income';
 
 class HomeScreen extends Component {
   render() {
@@ -103,9 +104,13 @@ const navigator = createStackNavigator({
      navigationOptions:{
        headerShown:false
      }
+   },
+   income:{
+     screen:Income,
+     navigationOptions:{
+       headerShown:false
+     }
    }
-
-   
 },{
     initialRouteName : 'landing'
   }

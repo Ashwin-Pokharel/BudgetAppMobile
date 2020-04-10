@@ -36,11 +36,30 @@ export default class Home extends Component{
                         <Text>Hello</Text>
                     </View>
                     <View>
-                        <Text>token:{JSON.stringify(navigation.getParam('token'))}</Text>
+                        <Text>token: {JSON.stringify(navigation.getParam('token'))}</Text>
+                        <Button
+                        onPress = {
+                          () =>{
+                            var knox  = JSON.stringify(navigation.getParam('token'))
+                            getIncome(knox)
+                          }}
+                        ></Button>
                     </View>
                 </View>
               </ImageBackground>
           </View>
         );    
       }
+}
+
+async function getIncome(knox){
+  var token = 'Token ' + JSON.parse(knox);
+  console.log(token)
+  const response = await fetch("http://127.0.0.1:8000/accountRest/test_auth", {
+    headers: {
+      Authorization: token
+    }
+  })
+  const val = await response.json();
+  alert(JSON.stringify(val))
 }

@@ -72,7 +72,14 @@ export default class Register extends Component{
                     <View style={{alignContent:'center' , alignItems:'center'}}>
                         <CustomButton
                         title = 'Register'
-                        onPress = {()=>register(this.state.username , this.state.email , this.state.password)}>
+                        onPress = {()=>
+                                {var dict = register(this.state.username , this.state.email , this.state.password);
+                                if (dict['success'] == true){
+                                    this.props.navigation.navigate('home',{
+                                        token: dict['token']
+                                })
+                            }
+                            }}>
                         </CustomButton>
                     </View>
                 </View>
@@ -83,7 +90,6 @@ export default class Register extends Component{
 }
 
 function register(username , email , password){
-    
     fetch('http://127.0.0.1:8000/accountRest/register',{
         method : 'POST',
         headers: {
@@ -100,10 +106,13 @@ function register(username , email , password){
         alert('error')
     })
     .then((response) => {
-        alert(response['token'])
-        })
+        token = response['token'];
         
-        return;
+        })
+        return({
+            'success': true,
+            'token' : token
+        });
 }
     
 
